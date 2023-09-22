@@ -3,7 +3,7 @@ from rest_framework.serializers import (
     CharField,
     SerializerMethodField,
 )
-
+from rest_framework import serializers
 from .models import Categoria, Editora, Autor, Livro, Compra, ItensCompra
 
 
@@ -58,7 +58,8 @@ class LivroDatailSerializer(ModelSerializer):
 
 
 class ItensCompraSerializer(ModelSerializer):
-    ''' Listar itens de compra '''
+    """Listar itens de compra"""
+
     total = SerializerMethodField()
 
     class Meta:
@@ -71,7 +72,8 @@ class ItensCompraSerializer(ModelSerializer):
 
 
 class ComprasSerializer(ModelSerializer):
-    ''' Lista compras '''
+    """Lista compras"""
+
     usuario = CharField(source="usuario.username")
     status = SerializerMethodField()
     itens = ItensCompraSerializer(many=True)
@@ -85,7 +87,8 @@ class ComprasSerializer(ModelSerializer):
 
 
 class CriarEditarItensCompraSerializar(ModelSerializer):
-    ''' Criar novos itens de compra '''
+    """Criar novos itens de compra"""
+
     class Meta:
         model = ItensCompra
         fields = ("id", "livro", "quantidade")
@@ -93,6 +96,7 @@ class CriarEditarItensCompraSerializar(ModelSerializer):
 
 class CriarEditarCompraSerializer(ModelSerializer):
     itens = CriarEditarItensCompraSerializar(many=True)
+    usuario = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Compra
